@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  ros2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    network_mode: host
+    ipc: host
+    privileged: true
+    
+    environment:
+      - DISPLAY=172.20.208.1:1  # Just hardcode it for now
+      - LIBGL_ALWAYS_INDIRECT=0
+      - ROS_DOMAIN_ID=42
+      - QT_X11_NO_MITSHM=1
+    
+    volumes:
+      - ..:/home/ros/ros2_ws:cached
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    
+    command: sleep infinity

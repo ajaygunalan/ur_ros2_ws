@@ -1,9 +1,13 @@
-# Pre-built ROS2 Jazzy + Gazebo Harmonic stack
 FROM althack/ros2:jazzy-gazebo
 
-# Install UR robot packages and essential ROS2 tools (as root)
-RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
-    liburdfdom-tools \
+ARG USERNAME=ros
+USER $USERNAME
+
+# Install all dependencies plus colcon extensions 
+RUN sudo add-apt-repository universe && \
+    sudo apt-get update && \
+    sudo apt-get install -y liburdfdom-tools && \
+    sudo apt-get install -y --no-install-recommends \
     ros-jazzy-ur-description \
     ros-jazzy-ur-moveit-config \
     ros-jazzy-ur-controllers \
@@ -21,12 +25,20 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     python3-colcon-common-extensions \
     && sudo rm -rf /var/lib/apt/lists/*
 
-# Switch to ros user for workspace setup
-USER ros
+# Install debugging and network tools for troubleshooting
+RUN sudo apt-get update && \
+    sudo apt-get install -y \
+    x11-apps \
+    iputils-ping \
+    net-tools \
+    dnsutils \
+    iproute2 \
+    netcat-openbsd \
+    && sudo rm -rf /var/lib/apt/lists/*
 
-# Set working directory to workspace
-WORKDIR /home/ros/ros2_ws
+WORKDIR /home/$USERNAME/ros2_ws
 
-# Source ROS2 base and workspace overlay
-RUN echo "source /opt/ros/jazzy/setup.bash" >> /home/ros/.bashrc && \
-    echo "source /home/ros/ros2_ws/install/setup.bash 2>/dev/null || true" >> /home/ros/.bashrc
+# Setup bashrc (with dynamic DISPLAY detection)
+RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc && \
+    echo "source ~/ros2_ws/install/setup.bash 2>/dev/null || true" >> ~/.bashrc && \
+    echo 'export DISPLAY=${DISPLAY:-$(ip route | grep default | awk "{print \$3}"):1}' >> ~/.bashrc
