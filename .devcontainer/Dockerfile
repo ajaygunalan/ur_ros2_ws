@@ -3,11 +3,14 @@ FROM althack/ros2:jazzy-gazebo
 ARG USERNAME=ros
 USER $USERNAME
 
-# Install all dependencies plus colcon extensions 
+# Install all ROS dependencies, tools, and debugging utilities in a single layer
 RUN sudo add-apt-repository universe && \
     sudo apt-get update && \
-    sudo apt-get install -y liburdfdom-tools && \
     sudo apt-get install -y --no-install-recommends \
+    # Core tools
+    liburdfdom-tools \
+    python3-colcon-common-extensions \
+    # ROS packages
     ros-jazzy-ur-description \
     ros-jazzy-ur-moveit-config \
     ros-jazzy-ur-controllers \
@@ -22,12 +25,7 @@ RUN sudo add-apt-repository universe && \
     ros-jazzy-velocity-controllers \
     ros-jazzy-position-controllers \
     ros-jazzy-ros2-control \
-    python3-colcon-common-extensions \
-    && sudo rm -rf /var/lib/apt/lists/*
-
-# Install debugging and network tools for troubleshooting
-RUN sudo apt-get update && \
-    sudo apt-get install -y \
+    # Debugging and network tools
     x11-apps \
     iputils-ping \
     net-tools \
@@ -38,7 +36,7 @@ RUN sudo apt-get update && \
 
 WORKDIR /home/$USERNAME/ros2_ws
 
-# Setup bashrc (with dynamic DISPLAY detection)
+# Setup bashrc with ROS environment
 RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc && \
     echo "source ~/ros2_ws/install/setup.bash 2>/dev/null || true" >> ~/.bashrc && \
     echo 'export DISPLAY=${DISPLAY:-$(ip route | grep default | awk "{print \$3}"):1}' >> ~/.bashrc
