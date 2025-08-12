@@ -1,0 +1,11 @@
+# Build folders
+build/
+install/
+log/
+
+# Source folders (managed by vcstool)
+src/*
+!src/.gitkeep
+
+# IDE
+.vscode/

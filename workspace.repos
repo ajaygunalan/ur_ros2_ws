@@ -1,0 +1,9 @@
+repositories:
+  ur_admittance_controller:
+    type: git
+    url: https://github.com/ajaygunalan/ur_admittance_controller.git
+    version: master
+  ur_simulation_gz:
+    type: git
+    url: https://github.com/ajaygunalan/ur_simulation_gz.git
+    version: main

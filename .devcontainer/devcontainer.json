@@ -1,0 +1,55 @@
+{
+  "name": "UR Admittance Workspace",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  
+  // Bind mount: host workspace -> container workspace (real-time sync)
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/ros/ros2_ws,type=bind",
+  "workspaceFolder": "/home/ros/ros2_ws",
+  
+  // User that VS Code terminal will use (must exist in container)
+  "remoteUser": "ros",
+  
+  // Build ROS2 workspace after container creation
+  "postCreateCommand": "rosdep update && rosdep install -i --from-path src -y --rosdistro jazzy && colcon build --symlink-install",
+  
+  // Container runtime configuration
+  "runArgs": [
+    "--network=host",     // Direct network access for ROS2 discovery
+    "--ipc=host",         // Shared memory for Gazebo/RViz performance
+    "--gpus=all"          // GPU passthrough for simulation/visualization
+  ],
+  
+  // Environment for GUI and ROS2 multi-machine setup
+  "containerEnv": {
+    "DISPLAY": ":0",                                      // X11 display server
+    "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",    // WSL2 Wayland compositor
+    "PULSE_SERVER": "${localEnv:PULSE_SERVER}",          // Audio server (if needed)
+    "ROS_DOMAIN_ID": "42"                                // ROS2 network isolation
+  },
+  
+  // GUI access: X11 socket and WSLg integration
+  "mounts": [
+    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
+    "source=/mnt/wslg,target=/mnt/wslg,type=bind"
+  ],
+  
+  // VS Code extensions and settings for ROS2 development
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",      // Python support
+        "ms-iot.vscode-ros",     // ROS tooling
+        "smilerobotics.urdf"     // URDF preview
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/opt/ros/jazzy/bin/python3",
+        "C_Cpp.default.includePath": [
+          "/opt/ros/jazzy/include/**",           // ROS2 headers
+          "${workspaceFolder}/install/include/**" // Your package headers
+        ]
+      }
+    }
+  }
+}
