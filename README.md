@@ -19,7 +19,7 @@ open in VS Code by `code .` and select `Reopen in Container`
     docker build -t ur-admittance-workspace -f .devcontainer/Dockerfile .
     ```
 
-2. Run the docker container:
+2. Run the docker container
 
      `docker run` command combines all the settings from your `docker-compose.yml` and relevant parts of `devcontainer.json`.
 
