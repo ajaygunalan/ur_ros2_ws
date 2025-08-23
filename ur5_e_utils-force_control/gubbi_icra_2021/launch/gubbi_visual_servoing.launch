@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- The purpose of this launch file is to start the visual servoing
+       system. -->
+  <arg name="debug" default="false" />
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find gubbi_icra_2021)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find gubbi_icra_2021)/config/info_rosconsole.conf" />
+
+  <arg name="search_r_dot_arg" default="0.005" />
+  <arg name="search_omega_arg" default="0.1570796" />
+  <arg name="search_total_t_arg" default="0.1" />
+  <include file="$(find gubbi_icra_2021)/launch/set_search_params.launch">
+    <arg name="search_r_dot" value="$(arg search_r_dot_arg)"/>
+    <arg name="search_omega" value="$(arg search_omega_arg)"/>
+    <arg name="search_total_t" value="$(arg search_total_t_arg)"/>
+  </include>
+
+  <!-- Argument to indicate whether the ROS nodes in this file are to connect to
+       hardware or Gazebo. -->
+  <arg name="sim" default="false" />
+
+  <!-- Name of the action server to be used with the UR5e -->
+  <arg
+    if="$(arg sim)"
+    name="action_server_name_arg"
+    value="/arm_controller/follow_joint_trajectory" />
+  <arg
+    unless="$(arg sim)"
+    name="action_server_name_arg"
+    value="/scaled_pos_joint_traj_controller/follow_joint_trajectory" />
+  <param
+    name="/visual_servoing/action_server_name"
+    type="str"
+    value="$(arg action_server_name_arg)" />
+  <param
+    name="/visual_servoing/ee_name"
+    type="str"
+    value="p42v_link1" />
+  <param
+    name="/visual_servoing/tgt_loc_ns"
+    type="str"
+    value="/visual_servoing" />
+
+  <include
+    file="$(find ur5e_p42v_moveit_config)/launch/planning_context.launch">
+    <arg name="load_robot_description" value="true"/>
+    <!-- <arg name="limited" value="false"/> -->
+  </include>
+
+  <!-- Launch the visual servoing node. -->
+  <node
+    name="visual_servoing_node"
+    pkg="gubbi_icra_2021"
+    type="gubbi_visual_servoing"
+    respawn="false" output="screen" />
+
+  <!-- Start ROS bag node with the given file name and topic list. -->
+  <arg
+    name="rosbag_file_name"
+    default="$(find gubbi_icra_2021)/dat/vs" />
+  <arg
+    name="rosbag_topic_list"
+    default="$(arg action_server_name_arg)/goal /joint_states /rosout /visual_servoing/fsm_state /visual_servoing/search/transform /visual_servoing/target_pose /deep_learning/bbox_img /deep_learning/bounding_box /deep_learning/exec_time /verasonics/channel_data" />
+  <node
+    name="rosbag_record_node"
+    pkg="rosbag"
+    type="record"
+    args="-o $(arg rosbag_file_name) $(arg rosbag_topic_list)" />
+</launch>

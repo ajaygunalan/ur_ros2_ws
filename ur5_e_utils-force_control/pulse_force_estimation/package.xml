@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pulse_force_estimation</name>
+  <version>1.0.1</version>
+  <description>C++ class and ROS node for ATI force/torque sensors connected to a Netbox. Includes gravity compensation and transformations.</description>
+  <author email="mgubbi1@jhu.edu">Mardava Gubbi</author>
+  <maintainer email="mgubbi1@jhu.edu">Mardava Gubbi</maintainer>
+  <url type="website">http://wiki.ros.org/pulse_force_estimation</url>
+  <license>See License.txt</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>diagnostic_msgs</build_depend>
+  <build_depend>diagnostic_updater</build_depend>
+  <build_depend>eigen_conversions</build_depend>
+  <build_depend>genmsg</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>moveit_core</build_depend>
+  <build_depend>moveit_ros_planning</build_depend>
+  <build_depend>moveit_ros_planning_interface</build_depend>
+  <build_depend>netft_utils</build_depend>
+  <build_depend>pulse_common_utils</build_depend>
+  <build_depend>pulse_control_utils</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rosbag</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>std_srvs</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>tf_conversions</build_depend>
+  <build_export_depend>diagnostic_msgs</build_export_depend>
+  <build_export_depend>diagnostic_updater</build_export_depend>
+  <build_export_depend>eigen_conversions</build_export_depend>
+  <build_export_depend>genmsg</build_export_depend>
+  <build_export_depend>geometry_msgs</build_export_depend>
+  <build_export_depend>message_generation</build_export_depend>
+  <build_export_depend>moveit_core</build_export_depend>
+  <build_export_depend>moveit_ros_planning</build_export_depend>
+  <build_export_depend>moveit_ros_planning_interface</build_export_depend>
+  <build_export_depend>netft_utils</build_export_depend>
+  <build_export_depend>pulse_common_utils</build_export_depend>
+  <build_export_depend>pulse_control_utils</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>rosbag</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+  <build_export_depend>std_srvs</build_export_depend>
+  <build_export_depend>tf</build_export_depend>
+  <build_export_depend>tf_conversions</build_export_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>rosbag</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>moveit_core</exec_depend>
+  <exec_depend>moveit_ros_planning</exec_depend>
+  <exec_depend>moveit_ros_planning_interface</exec_depend>
+  <exec_depend>diagnostic_msgs</exec_depend>
+  <exec_depend>diagnostic_updater</exec_depend>
+  <exec_depend>eigen_conversions</exec_depend>
+  <exec_depend>genmsg</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>netft_utils</exec_depend>
+  <exec_depend>pulse_common_utils</exec_depend>
+  <exec_depend>pulse_control_utils</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>tf_conversions</exec_depend>
+  <export>
+
+  </export>
+</package>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file launches a node running a single-track linear kalman filter (LKF) on outputs from a point source
+localization system. This LKF outputs a single position estimate of the source each iteration. As a result, this system
+is unable to resolve the elevation symmetry problem. -->
+<launch>
+  <!-- Integer index of class corresponding to sources in point source localization outputs. Other detections may
+       correspond to reflection artifacts, and are usually associated with a class index of 1. -->
+  <arg name="src_class_id" default="0" />
+
+  <node
+    name="filter"
+    pkg="pulse_estimation_filters"
+    type="linear_kalman_filter_node"
+    required="true" respawn="false" output="screen">
+    <param name="src_class_id" type="int" value="$(arg src_class_id)" />
+    <param name="detection_topic_name" type="str" value="/pt_src_loc/detections" />
+  </node>
+</launch>

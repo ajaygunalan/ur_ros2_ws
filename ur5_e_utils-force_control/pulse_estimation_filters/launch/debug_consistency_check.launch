@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file launches the file `consistency_check.launch` with debug prints enabled for the consistency check node.
+Use this launch file if running directly from the terminal. If you wish to create a single visual servoing launch file
+running this consistency check and other algorithms, include `consistency_check.launch` instead of this file and adjust
+the print configuration accordingly. -->
+<launch>
+  <arg name="debug" default="true" />
+
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_estimation_filters)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_estimation_filters)/config/info_rosconsole.conf" />
+
+  <include file="$(find pulse_estimation_filters)/launch/consistency_check.launch" />
+</launch>

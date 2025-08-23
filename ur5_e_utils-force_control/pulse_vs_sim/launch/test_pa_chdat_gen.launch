@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Flag indicating whether or not to print debug statements from nodes launched in this file. -->
+  <arg name="debug" default="true" />
+
+  <!-- Time step between consecutive point source movements. -->
+  <arg name="pa_chdat_delta_t" default="1.0" />
+  <!-- <arg name="pa_chdat_delta_t" default="0.1" /> -->
+
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_vs_sim)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_vs_sim)/config/info_rosconsole.conf" />
+
+  <!-- Launch a node to generate and publish simulated photoacoustic channel data frames. -->
+  <node
+    name="pa_chdat_gen_test"
+    pkg="pulse_vs_sim"
+    type="pa_chdat_gen_test"
+    respawn="false" output="screen">
+    <param name="delta_t" type="double" value="$(arg pa_chdat_delta_t)" />
+  </node>
+
+</launch>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file launches the file `particle_filter_vel_noise.launch` with debug prints enabled for the particle filter
+node. Use this launch file if running directly from the terminal. If you wish to create a single visual servoing launch
+file running this particle filter and other algorithms, include `particle_filter_vel_noise.launch` instead of this file
+and adjust the print configuration accordingly. -->
+<launch>
+  <arg name="debug" default="true" />
+
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_estimation_filters)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_estimation_filters)/config/info_rosconsole.conf" />
+
+  <include file="$(find pulse_estimation_filters)/launch/particle_filter_vel_noise.launch" />
+</launch>

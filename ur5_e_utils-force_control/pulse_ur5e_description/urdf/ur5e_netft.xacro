@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="ur5e_netft">
+  <!-- UR5e robot (check ur_description/urdf/ur5e.xacro
+       for explanation of which xacro file to use) -->
+  <xacro:include filename="$(find ur_description)/urdf/inc/ur5e_macro.xacro" />
+  <!-- ATI-NET-Gamma Force-Torque sensor -->
+  <xacro:include filename="ati_netft_gamma.xacro" />
+
+  <xacro:arg
+    name="kinematics_params"
+    default="$(find pulse_ur5e_description)/config/ur5e_kinematics.yaml"/>
+
+  <!-- UR5e robot -->
+  <!-- The UR5e xacro must be included with any parameters to be passed -->
+  <xacro:ur5e_robot
+    prefix=""
+    kinematics_parameters_file="$(arg kinematics_params)" />
+  <!-- ATI-NET-Gamma Force-Torque sensor -->
+  <!-- Here we include the force-torque sensor by setting the parameters -->
+  <!-- TODO: Check end-effector link name of robot for field `connected_to` -->
+  <xacro:ati_netft_gamma prefix="netft_" connected_to="tool0"/>
+</robot>

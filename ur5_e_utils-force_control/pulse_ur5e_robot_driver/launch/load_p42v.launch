@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+  <arg
+    name="kinematics_params"
+    default="$(find pulse_ur5e_description)/config/ur5e_kinematics.yaml"
+    doc="YAML file containing the robot's kinematic parameters. These will be different for each robot as they contain the robot's calibration."/>
+  <!-- Parameter file for UR5e with P4-2v configuration -->
+  <param
+    name="robot_description"
+    command="$(find xacro)/xacro '$(find pulse_ur5e_description)/urdf/ur5e_p42v.xacro'
+    kinematics_params:=$(arg kinematics_params)" />
+</launch>

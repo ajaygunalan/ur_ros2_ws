@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- This file tests the spiral search algorithm. -->
+  <!-- Linear path planning parameters. -->
+  <!-- Argument to indicate whether the ROS nodes in this file are to connect to
+       hardware or Gazebo. -->
+  <arg name="sim" default="false"/>
+  <arg name="end_effector_a_max" default="0.01"/>
+  <arg name="end_effector_v_max" default="0.01"/>
+  <arg name="end_effector_alpha_max" default="0.3141593"/>
+  <arg name="end_effector_omega_max" default="0.3141593"/>
+  <arg name="joint_alpha_max" default="1.5707963"/>
+  <arg name="joint_omega_max" default="1.5707963"/>
+  <arg name="joint_omega_k_p" default="1.0"/>
+  <arg name="delta_t" default="0.01"/>
+
+  <include file="$(find pulse_lab_ur5_e_control_utils)/launch/set_action_client_params.launch"/>
+  <include file="$(find pulse_lab_ur5_e_control_utils)/launch/set_search_params.launch"/>
+
+  <!-- Search algorithm parameters. -->
+  <arg name="search_r_dot" default="0.005" />
+  <arg name="search_omega" default="0.3141593" />
+
+  <!-- Name of the action server to be used with the UR5e -->
+  <arg
+    if="$(arg sim)"
+    name="action_server_name_arg"
+    value="/arm_controller/follow_joint_trajectory" />
+  <arg
+    unless="$(arg sim)"
+    name="action_server_name_arg"
+    value="/scaled_pos_joint_traj_controller/follow_joint_trajectory" />
+  <param
+    name="action_server_name"
+    type="str"
+    value="$(arg action_server_name_arg)" />
+
+  <!-- Call the test node for the spiral search algorithm. -->
+  <node name="test_search_spiral_001" pkg="pulse_lab_ur5_e_control_utils" type="test_search_spiral_001" respawn="false" output="screen"/>
+
+  <!-- Start ROS bag node with the given file name and topic list. -->
+  <arg
+    name="rosbag_file_name"
+    default="$(find pulse_lab_ur5_e_control_utils)/dat/vs" />
+  <arg
+    name="rosbag_topic_list"
+    default="$(arg action_server_name_arg)/goal /joint_states /rosout /visual_servoing/fsm_state /visual_servoing/search/transform /visual_servoing/target_pose /deep_learning/bbox_img /deep_learning/bounding_box /deep_learning/exec_time /verasonics/channel_data /search_spiral/goal" />
+  <node
+    name="rosbag_record_node"
+    pkg="rosbag"
+    type="record"
+    args="-o $(arg rosbag_file_name) $(arg rosbag_topic_list)" />
+</launch>

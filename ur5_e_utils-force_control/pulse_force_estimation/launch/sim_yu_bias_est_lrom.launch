@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="debug" default="true" />
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_force_estimation)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_force_estimation)/config/info_rosconsole.conf" />
+
+  <arg
+    name="ros_bag_file_name"
+    default="$(find pulse_force_estimation)/dat/probe_2023-10-11-15-41-00.bag" />
+
+  <!-- Launch `move_group` node, required for base class. Typically you would want to launch this
+       file separately rather than including it in another launch file, but because this launch file
+       is not meant to be used with an actual robot, it is okay. -->
+  <include
+    file="$(find pulse_control_utils)/launch/p42v_move_group.launch">
+  </include>
+
+  <!-- Use private parameters for parameters such as time step and maximum
+       angular velocity. -->
+  <node
+    name="yu_bias_est_lrom_test"
+    pkg="pulse_force_estimation"
+    type="test_yu_bias_est_lrom_node"
+    respawn="false" output="screen">
+    <param name="ros_bag_file_name" type="str" value="$(arg ros_bag_file_name)" />
+  </node>
+</launch>

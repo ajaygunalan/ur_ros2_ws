@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Argument to indicate whether the ROS nodes in this file are to connect to
+       hardware or Gazebo. -->
+  <arg name="sim" default="false" />
+  <arg name="delta_t_arg" default="0.1" />
+  <arg name="ee_vel_arg" default="0.02" />
+  <arg name="joint_omega_max_arg" default="0.1" />
+  <arg name="num_steps_arg" default="250" />
+
+  <arg name="debug" default="false" />
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_control_utils)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_control_utils)/config/info_rosconsole.conf" />
+
+  <arg
+    name="rosbag_file_name"
+    default="$(find pulse_control_utils)/dat/spatial_vel_wx" />
+  <arg name="rosbag_topic_list" default="/joint_states /rosout" />
+
+  <include file="$(find pulse_control_utils)/launch/set_params.launch">
+    <arg name="sim" value="$(arg sim)"/>
+    <arg name="rosbag_file_name" value="$(arg rosbag_file_name)"/>
+    <arg name="rosbag_topic_list" value="$(arg rosbag_topic_list)"/>
+  </include>
+
+  <include
+    file="$(find ur5e_p42v_moveit_config)/launch/planning_context.launch">
+    <arg name="load_robot_description" value="true"/>
+    <!-- <arg name="limited" value="false"/> -->
+  </include>
+  <param name="/end_effector_name" type="str" value="p42v_link1" />
+
+  <!-- Use private parameters for parameters such as time step and maximum
+       angular velocity. -->
+  <node
+    name="spatial_vel_test_node"
+    pkg="pulse_control_utils"
+    type="test_base_spatial_vel"
+    args="wx"
+    respawn="false" output="screen">
+    <rosparam
+      command="load"
+      file="$(find ur5e_p42v_moveit_config)/config/kinematics.yaml" />
+    <param
+      name="delta_t"
+      type="double"
+      value="$(arg delta_t_arg)" />
+    <param
+      name="end_effector_vel"
+      type="double"
+      value="$(arg ee_vel_arg)" />
+    <param
+      name="num_steps"
+      type="int"
+      value="$(arg num_steps_arg)" />
+  </node>
+</launch>

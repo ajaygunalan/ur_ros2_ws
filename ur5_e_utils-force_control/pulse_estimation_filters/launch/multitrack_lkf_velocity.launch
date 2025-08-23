@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file launches a node executing a multi-track Linear Kalman Filter (LKF) on outputs from a point source
+     localization system. This system returns multiple outputs, each a likely source location candidate. These multiple
+     candidates are required to solve the elevation symmetry problem. -->
+<launch>
+  <!-- Integer index of class corresponding to sources in point source localization outputs. Other detections may
+       correspond to reflection artifacts, and are usually associated with a class index of 1. -->
+  <arg name="src_class_id" default="0" />
+
+  <!-- Name of fixed frame in which multi-track LKF is to be executed. -->
+  <arg name="base_frame_name" default="base_link" />
+
+  <!-- Name of probe frame in which point source localization outputs are received. -->
+  <arg name="probe_frame_name" default="probe" />
+
+  <!-- Coefficient of smoothing filter to be applied to LKF outputs. -->
+  <arg name="lkf_smooth_coeff" default="0.5" />
+
+  <node
+    name="filter" pkg="pulse_estimation_filters" type="multitrack_lkf_velocity_node"
+    required="true" respawn="false" output="screen">
+    <param name="src_class_id" type="int" value="$(arg src_class_id)" />
+    <param name="base_frame_name" type="str" value="$(arg base_frame_name)" />
+    <param name="probe_frame_name" type="str" value="$(arg probe_frame_name)" />
+    <param name="lkf_smooth_coeff" type="double" value="$(arg lkf_smooth_coeff)" />
+    <param name="detection_topic_name" type="str" value="/pt_src_loc/detections" />
+  </node>
+</launch>

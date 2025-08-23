@@ -1,0 +1,12 @@
+*.bag
+*.csv
+dat
+datasets
+*.h5
+*.mat
+matlab_msg_gen_ros1/
+*.png
+__pycache__
+*.swp
+*.txt
+vid

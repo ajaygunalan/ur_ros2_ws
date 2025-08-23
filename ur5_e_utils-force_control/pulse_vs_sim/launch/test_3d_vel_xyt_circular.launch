@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Flag indicating whether or not to print debug statements from nodes launched in this file. -->
+  <arg name="debug" default="true" />
+
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_vs_sim)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_vs_sim)/config/info_rosconsole.conf" />
+
+  <include file="$(find pulse_vs_sim)/launch/point_source_ellipsoid.launch" />
+  <include file="$(find pulse_detectron2_ros)/launch/sim_det_3d.launch" />
+
+  <include file="$(find pulse_vs_control)/launch/moving.launch">
+    <arg name="kp_trans_x" value="0.01" />
+    <arg name="ki_trans_x" value="0.001" />
+    <arg name="kd_trans_x" value="0.0001" />
+    <arg name="kp_trans_y" value="0.01" />
+    <arg name="ki_trans_y" value="0.001" />
+    <arg name="kd_trans_y" value="0.0001" />
+    <arg name="kp_rot_z" value="0.1" />
+    <arg name="ki_rot_z" value="0.01" />
+    <arg name="kd_rot_z" value="0.001" />
+  </include>
+
+  <include file="$(find pulse_estimation_filters)/launch/multitrack_lkf_velocity.launch">
+    <arg name="lkf_smooth_coeff" value="0.8" />
+  </include>
+
+  <include file="$(find pulse_vs_guidance)/launch/xyt_guidance.launch" />
+
+  <node pkg="gubbi_vs_2024" type="vis_multitrack_lkf_node" name="vis_multitrack_lkf_node" />
+  <node pkg="rviz" type="rviz" name="rviz_node" args="-d $(find pulse_vs_sim)/rviz/rviz_tf.rviz" />
+</launch>

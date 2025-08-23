@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Flag indicating whether or not to print debug statements from nodes launched in this file. -->
+  <arg name="debug" default="true" />
+
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_vs_sim)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_vs_sim)/config/info_rosconsole.conf" />
+
+  <include file="$(find pulse_vs_sim)/launch/point_source_ellipsoid.launch" />
+  <include file="$(find pulse_detectron2_ros)/launch/sim_det_3d.launch" />
+  <include file="$(find pulse_vs_control)/launch/moving.launch" />
+  <include file="$(find pulse_estimation_filters)/launch/multitrack_lkf_position.launch" />
+  <include file="$(find pulse_vs_guidance)/launch/xy_guidance.launch" />
+
+  <node pkg="gubbi_vs_2024" type="vis_multitrack_lkf_node" name="vis_multitrack_lkf_node" />
+  <node pkg="rviz" type="rviz" name="rviz_node" args="-d $(find pulse_vs_sim)/rviz/rviz_tf.rviz" />
+</launch>

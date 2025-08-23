@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- The purpose of this launch file is to set the parameters for the tests of
+       the spiral search algorithm. -->
+  <!-- Radius increase rate of search pattern. -->
+  <arg name="search_r_dot" default="0.005" />
+  <param
+    name="/visual_servoing/search/r_dot"
+    type="double"
+    value="$(arg search_r_dot)" />
+
+  <!-- Angular velocity of search pattern. -->
+  <arg name="search_omega" default="0.1570796" />
+  <param
+    name="/visual_servoing/search/omega"
+    type="double"
+    value="$(arg search_omega)" />
+
+  <!-- Overall time step for search pattern -->
+  <arg name="search_total_t" default="0.1" />
+  <param
+    name="/visual_servoing/search/total_t"
+    type="double"
+    value="$(arg search_total_t)" />
+</launch>

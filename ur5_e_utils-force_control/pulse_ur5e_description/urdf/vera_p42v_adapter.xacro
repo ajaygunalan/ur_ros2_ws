@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- Here we define the 2 parameters of the macro -->
+  <xacro:macro name="verasonics_p42v_adapter" params="prefix connected_to">
+    <!-- The wrist component has a diameter of 63 mm, and the probe holder has a short side of
+         50 mm. The probe is much smaller along its lateral and elevation dimensions. 2 mm margin
+         for safety. -->
+    <xacro:property name="p42v_collision_width" value="0.065" />
+    <!-- The following parameters were obtained from CAD drawings of the UR5e wrist component and
+         P4-2v adapter. -->
+    <xacro:property name="wrist_height" value="0.035" />
+    <!-- Intrusion of P4-2v adapter into wrist component (see `img/p42v_adapter_intrusion.png`). -->
+    <xacro:property name="p42v_adapter_intrusion" value="0.020" />
+    <!-- Axial position of the interface between the P4-2v transducer and its cable relative to the
+         end of the P4-2v adapter inserted into the wrist-component
+         (see `img/p42v_cable_end.png`). -->
+    <xacro:property name="p42v_cable_end" value="0.080078" />
+    <!-- Distance between the interface between the P4-2v transducer and its cable and the imaging
+         face of the transducer along the axial dimension of the transducer
+         (see `img/p42v_trans_len.png`). -->
+    <xacro:property name="p42v_trans_len" value="0.13859" />
+
+    <!-- Overall dimension of collision box for wrist component, P4-2v adapter, and P4-2v transducer
+         along axial dimension of transducer. No margin along this edge, to allow for contact. -->
+    <xacro:property
+      name="p42v_collision_height"
+      value="${wrist_height - p42v_adapter_intrusion + p42v_cable_end + p42v_trans_len}" />
+
+    <material name="visual_orange">
+      <color rgba="1.0 0.3 0.0 1" />
+    </material>
+
+    <!-- Create a fixed joint with a parameterized name. -->
+    <joint name="${prefix}joint0" type="fixed">
+      <!-- The parent link must be read from the robot model it is attached to. -->
+      <parent link="${connected_to}" />
+      <child link="${prefix}link0" />
+      <!-- The tool is directly attached to the flange. -->
+      <origin rpy="0 0 0" xyz="0 0 0" />
+    </joint>
+    <link name="${prefix}link0">
+      <visual>
+        <geometry>
+          <!-- The path to the visual meshes in the package. -->
+          <mesh
+            filename="package://pulse_ur5e_description/meshes/visual/vera_p42v_adapter.stl"/>
+        </geometry>
+        <material name="visual_orange" />
+      </visual>
+      <collision>
+        <geometry>
+          <!-- The path to the collision meshes in the package. -->
+          <box size="${p42v_collision_width} ${p42v_collision_width} ${p42v_collision_height}" />
+        </geometry>
+        <origin xyz="0 0 ${p42v_collision_height/2}" rpy="0 0 0" />
+      </collision>
+    </link>
+
+    <!-- TCP frame -->
+    <joint name="${prefix}joint1" type="fixed">
+      <origin xyz="0 0 ${p42v_collision_height}" rpy="0 0 0" />
+      <parent link="${prefix}link0" />
+      <child link="${prefix}link1" />
+    </joint>
+    <link name="${prefix}link1" />
+  </xacro:macro>
+</robot>

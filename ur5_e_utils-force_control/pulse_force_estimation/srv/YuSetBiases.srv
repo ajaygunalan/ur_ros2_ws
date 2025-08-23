@@ -1,0 +1,7 @@
+geometry_msgs/Vector3 f_grav_b
+geometry_msgs/Vector3 f_bias_s
+geometry_msgs/Vector3 t_bias_s
+geometry_msgs/Vector3 p_grav_s
+geometry_msgs/Quaternion q_s_e
+---
+bool success

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Time step between consecutive point source movements. -->
+  <arg name="pt_src_delta_t" default="0.01" />
+
+  <!-- Center of locus of x-, y-, and z-positions of point source relative to fixed frame. [m] -->
+  <arg name="x_pos_center" default="0.00" />
+  <arg name="y_pos_center" default="0.00" />
+  <arg name="z_pos_center" default="0.06" />
+
+  <!-- Radius of locus of x-, y-, and z-positions of point source relative to fixed frame. [m] -->
+  <arg name="x_pos_axis" default="0.02" />
+  <arg name="y_pos_axis" default="0.02" />
+  <arg name="z_pos_axis" default="0.00" />
+
+  <!-- Frequency of locus of x-, y-, and z-positions of point source relative to fixed frame. [rad/s] -->
+  <arg name="x_pos_freq" default="0.5" />
+  <arg name="y_pos_freq" default="0.5" />
+  <arg name="z_pos_freq" default="0.5" />
+
+  <!-- Flag indicating whether or not to add process noise to point source control -->
+  <arg name="add_process_noise" default="true" />
+
+  <!-- Name of frame corresponding to ultrasound probe. -->
+  <arg name="probe_frame_name" default="p42v_link1" />
+
+  <!-- Launch a node to move a point source in a pre-determined manner relative to a fixed frame. -->
+  <node
+    name="pt_src_ctrl"
+    pkg="pulse_vs_sim"
+    type="point_source_ellipsoid_node"
+    required="true" respawn="false" output="screen">
+    <param name="delta_t" type="double" value="$(arg pt_src_delta_t)" />
+    <param name="x_pos_axis" type="double" value="$(arg x_pos_axis)" />
+    <param name="y_pos_axis" type="double" value="$(arg y_pos_axis)" />
+    <param name="z_pos_axis" type="double" value="$(arg z_pos_axis)" />
+    <param name="x_pos_center" type="double" value="$(arg x_pos_center)" />
+    <param name="y_pos_center" type="double" value="$(arg y_pos_center)" />
+    <param name="z_pos_center" type="double" value="$(arg z_pos_center)" />
+    <param name="x_pos_freq" type="double" value="$(arg x_pos_freq)" />
+    <param name="y_pos_freq" type="double" value="$(arg y_pos_freq)" />
+    <param name="z_pos_freq" type="double" value="$(arg z_pos_freq)" />
+    <param name="add_process_noise" type="boolean" value="$(arg add_process_noise)" />
+    <param name="probe_frame_name" type="str" value="$(arg probe_frame_name)" />
+  </node>
+</launch>

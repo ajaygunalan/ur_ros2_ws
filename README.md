@@ -13,13 +13,15 @@ open in VS Code by `code .` and select `Reopen in Container`
 
 ### B. Normal Docker Setup
 
+#### Initial Setup (Do Once)
+
 1. Build the docker image
     ```bash
     cd ~/ur_ros2_ws
     docker build -t ur-admittance-workspace -f .devcontainer/Dockerfile .
     ```
 
-2. Run the docker container
+2. Create and run the docker container (do this only once):
 
      `docker run` command combines all the settings from your `docker-compose.yml` and relevant parts of `devcontainer.json`.
 
@@ -55,10 +57,24 @@ open in VS Code by `code .` and select `Reopen in Container`
     * `ur-admittance-workspace`: The image you just built.
     * `sleep infinity`: The command to keep the container running, from `command`.
 
-3. Access the container's shell:
+#### Daily Usage
+
+Once the container is created, use these commands for daily development:
+
+1. **Start the container:**
+    ```bash
+    docker start ur-dev-container
+    ```
+
+2. **Access the container's shell:**
     ```bash
     docker exec -it ur-dev-container bash
     ```
 
-    Now, follow the steps [here](https://github.com/ajaygunalan/ur_admittance_controller/blob/master/README.md) like a normal ROS2 workspace.
+3. **Stop the container when done:**
+    ```bash
+    docker stop ur-dev-container
+    ```
+
+Now, follow the steps [here](https://github.com/ajaygunalan/ur_admittance_controller/blob/master/README.md) like a normal ROS2 workspace.
 

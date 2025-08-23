@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file launches a guidance node which attempts to solve the elevation symmetry problem. The behavior of the
+guidance node each iteration depends on the number of source candidate locations output by the estimation filter. With
+two or more candidates, the guidance node selects two (based on the distance of their mid-point from the probe center)
+and places the probe at their mid-point with the lateral axis of the probe along the line joining the two source
+location candidates. With one candidate, the guidance node centers the probe laterally and elevationally above the
+source location estimate. With zero valid source location estimates, the guidance node implements the spiral search
+algorithm presented by Gubbi and Bell, IEEE ICRA 2021. -->
+<launch>
+  <!-- Flag indicating whether or not to print debug statements from nodes launched in this file. -->
+  <arg name="debug" default="true" />
+
+  <!-- Name of ROS topic containing network outputs -->
+  <arg name="detection_topic_name" default="/pt_src_loc/detections" />
+  <arg name="base_frame_name" default="base_link" />
+  <arg name="probe_frame_name" default="p42v_link1" />
+
+  <!-- Flag indicating whether or not to perform histogram matching -->
+  <arg name="match_histograms" default="false" />
+
+  <!-- Flag indicating whether or not to perform normalizing -->
+  <arg name="normalize_img" default="false" />
+
+  <arg name="bias_values_file" default="$(find pulse_force_estimation)/config/force_bias_est.h5" />
+
+  <arg name="ignore_elevation" default="false" />
+  <arg name="single_det" default="true" />
+
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find gubbi_vs_2024)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find gubbi_vs_2024)/config/info_rosconsole.conf" />
+
+  <include file="$(find pulse_force_estimation)/launch/yu_bias_comp.launch">
+    <arg name="bias_values_file" value="$(arg bias_values_file)"/>
+  </include>
+
+  <include file="$(find pulse_detectron2_ros)/launch/sys_a.launch">
+    <arg name="match_histograms" value="$(arg match_histograms)" />
+    <arg name="normalize_img" value="$(arg normalize_img)" />
+  </include>
+
+  <include file="$(find pulse_detectron2_ros)/launch/vis_obj_det.launch">
+    <arg name="probe_frame_name" value="$(arg probe_frame_name)" />
+  </include>
+
+  <!-- Launch a node to move the ultrasound transducer using the selected guidance system to track the point source. -->
+  <node
+    name="visual_servoing"
+    pkg="gubbi_vs_2024"
+    type="gubbi_vs_node"
+    required="true" respawn="false" output="screen">
+    <param name="detection_topic_name" type="str" value="$(arg detection_topic_name)" />
+    <param name="base_frame_name" type="str" value="$(arg base_frame_name)" />
+    <param name="probe_frame_name" type="str" value="$(arg probe_frame_name)" />
+    <param name="ignore_elevation" type="boolean" value="$(arg ignore_elevation)" />
+    <param name="single_det" type="boolean" value="$(arg single_det)" />
+  </node>
+
+  <node pkg="gubbi_vs_2024" type="vis_multitrack_lkf_node" name="vis_multitrack_lkf_node">
+    <param name="lkf_topic_name" value="/visual_servoing/multi_track_lkf" />
+  </node>
+
+  <node pkg="rviz" type="rviz" name="rviz_node" args="-d $(find gubbi_vs_2024)/rviz/multitrack_lkf.rviz" />
+  <node pkg="rosbag" type="record" name="rosbag_record" args="-a -o sys_a" />
+</launch>

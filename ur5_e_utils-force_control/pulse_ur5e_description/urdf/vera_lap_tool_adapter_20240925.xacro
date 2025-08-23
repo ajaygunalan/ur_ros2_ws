@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- Here we define the 2 parameters of the macro -->
+  <!-- previously, verasonics_p42v_adapter -->
+  <xacro:macro name="verasonics_lap_tool_adapter" params="prefix connected_to">
+    <!-- Create a fixed joint with a parameterized name. -->
+    <joint name="${prefix}joint0" type="fixed">
+      <!-- The parent link must be read from the robot model it is attached to. -->
+      <parent link="${connected_to}" />
+      <child link="${prefix}link0" />
+      <!-- The tool is directly attached to the flange. -->
+      <origin rpy="0 0 -0.785" xyz="0 0 0" />
+    </joint>
+    <link name="${prefix}link0">
+      <visual>
+        <geometry>
+          <!-- The path to the visual meshes in the package. -->
+          <mesh
+            filename="package://pulse_ur5e_description/meshes/visual/lap_tool_holder_9_20_back.stl"/>
+        </geometry>
+      </visual>
+      <collision>
+        <geometry>
+          <!-- The path to the collision meshes in the package. -->
+          <mesh
+            filename="package://pulse_ur5e_description/meshes/collision/lap_tool_holder_9_20_back.stl"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- TCP frame -->
+    <joint name="${prefix}joint1" type="fixed">
+      <!-- <origin xyz="0 0 0.185" rpy="0 0 1.5708" /> -->
+       <origin xyz="0 0 0.08" rpy="1.5708 0 0" />  <!-- 90 degree rotation-->
+     <parent link="${prefix}link0" />
+      <child link="${prefix}link1" />
+    </joint>
+     <link name="${prefix}link1" />
+    <joint name="${prefix}joint2" type="fixed">
+      <!-- <origin xyz="0 0 0.185" rpy="0 0 1.5708" /> -->
+       <origin xyz="0 0 0.530" rpy="0 0 0" />  <!-- 90 degree rotation-->
+     <parent link="${prefix}link1" />
+      <child link="${prefix}link2" />
+    </joint>
+     <link name="${prefix}link2" />
+  </xacro:macro>
+</robot>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <arg name="debug" default="false" />
+  <arg name="bias_values_file" default="" />
+
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_force_estimation)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_force_estimation)/config/info_rosconsole.conf" />
+
+  <!-- Publish the raw force-torque readings in the sensor frame `S`-->
+  <node
+    name="netft_node"
+    pkg="netft_utils"
+    type="netft_node"
+    args="169.254.120.10"
+    respawn="false"
+    output="screen"/>
+
+  <!-- Perform bias compensation and gravity estimation with parameters
+       configurable via a ROS service. -->
+  <node
+    name="yu_bias_comp_node"
+    pkg="pulse_force_estimation"
+    type="yu_bias_comp_node"
+    respawn="false"
+    output="screen">
+    <param name="bias_values_file" value="$(arg bias_values_file)" />
+  </node>
+</launch>

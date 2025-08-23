@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- Here we define the 2 parameters of the macro -->
+  <xacro:macro name="ati_netft_gamma" params="prefix connected_to">
+    <!-- The parameters listed below were obtained from CAD drawings of the UR5e mounting plate
+         adapter of the NET-FT sensor, and PDF drawings of the NET-FT sensor stored on the PULSE Lab
+         NAS. -->
+    <!-- Sensor dip is the extrusion into the UR5e end effector of the mounting plate adapter, which
+         accommodates the corresponding shape of the UR5e end effector. -->
+    <xacro:property name="sensor_dip" value="0.003" />
+    <!-- Sensor length is the height of the combination of the UR5e mounting plate adapter and the
+         sensor, excluding the sensor dip. -->
+    <xacro:property name="sensor_length" value="0.04906" />
+    <xacro:property name="sensor_collision_radius" value="0.065" />
+
+    <material name="visual_grey">
+      <color rgba="0.5 0.5 0.5 1" />
+    </material>
+
+    <!-- Create a fixed joint with a parameterized name. -->
+    <joint name="${prefix}joint0" type="fixed">
+      <!-- The parent link must be read from the robot model it is attached to. -->
+      <parent link="${connected_to}"/>
+      <child link="${prefix}link0"/>
+      <!-- The tool is directly attached to the flange, with the sensor dip. -->
+      <origin rpy="0 0 0" xyz="0 0 ${-sensor_dip}"/>
+    </joint>
+    <link name="${prefix}link0">
+      <visual>
+        <geometry>
+          <!-- The path to the visual meshes in the package. -->
+          <mesh filename="package://pulse_ur5e_description/meshes/visual/ati_netft_gamma.stl" />
+        </geometry>
+        <material name="visual_grey" />
+      </visual>
+      <collision>
+        <geometry>
+          <!-- The path to the collision meshes in the package. -->
+          <cylinder length="${sensor_length}" radius="${sensor_collision_radius}" />
+        </geometry>
+        <origin xyz="0 0 ${sensor_dip+(sensor_length/2)}" rpy="0 0 0" />
+      </collision>
+    </link>
+
+    <!-- TCP frame -->
+    <joint name="${prefix}joint1" type="fixed">
+      <origin xyz="0 0 ${sensor_dip+sensor_length}" rpy="0 0 0"/>
+      <parent link="${prefix}link0"/>
+      <child link="${prefix}link1"/>
+    </joint>
+    <link name="${prefix}link1"/>
+
+  </xacro:macro>
+</robot>

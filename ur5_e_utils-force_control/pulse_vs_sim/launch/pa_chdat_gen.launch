@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Time step between consecutive point source movements. [s] -->
+  <arg name="pa_chdat_delta_t" default="1.0" />
+  <!-- <arg name="pa_chdat_delta_t" default="0.1" /> -->
+
+  <!-- Desired image dimensions -->
+  <arg name="img_height_px" default="926" />
+  <arg name="img_width_px" default="256" />
+
+  <!-- Nominal speed of sound to be used in simulation. [m/s] -->
+  <arg name="sim_speed_of_sound" default="1540.0" />
+
+  <!-- Sampling frequency of transducer being modeled. [Hz] -->
+  <arg name="trans_samp_freq" default="11.88e6" />
+
+  <!-- Launch a node to generate and publish simulated photoacoustic channel data frames. -->
+  <node
+    name="pa_chdat_gen"
+    pkg="pulse_vs_sim"
+    type="pa_chdat_gen_node"
+    required="true" respawn="false" output="screen">
+    <param name="delta_t" type="double" value="$(arg pa_chdat_delta_t)" />
+    <param name="img_height_px" type="int" value="$(arg img_height_px)" />
+    <param name="img_width_px" type="int" value="$(arg img_width_px)" />
+    <param name="sim_speed_of_sound" type="double" value="$(arg sim_speed_of_sound)" />
+    <param name="trans_samp_freq" type="double" value="$(arg trans_samp_freq)" />
+  </node>
+</launch>

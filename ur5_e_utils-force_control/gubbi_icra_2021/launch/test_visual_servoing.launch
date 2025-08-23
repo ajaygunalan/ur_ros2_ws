@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- The purpose of this launch file is to test the visual servoing
+       system. -->
+  <arg name="debug" default="false" />
+  <arg name="ros_record" default="true" />
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_lab_ur5_e_control_utils)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_lab_ur5_e_control_utils)/config/info_rosconsole.conf" />
+
+  <!-- Call the test node for the visual servoing class. -->
+  <node
+    name="test_visual_servoing_node"
+    pkg="pulse_lab_ur5_e_control_utils"
+    type="test_visual_servoing"
+    respawn="false" output="screen" />
+
+  <!-- Argument to indicate whether the ROS nodes in this file are to connect to
+       hardware or Gazebo. -->
+  <arg name="sim" default="false" />
+
+  <!-- Name of the action server to be used with the UR5e -->
+  <arg
+    if="$(arg sim)"
+    name="action_server_name_arg"
+    value="/arm_controller/follow_joint_trajectory" />
+  <arg
+    unless="$(arg sim)"
+    name="action_server_name_arg"
+    value="/scaled_pos_joint_traj_controller/follow_joint_trajectory" />
+  <param
+    name="action_server_name"
+    type="str"
+    value="$(arg action_server_name_arg)" />
+
+  <!-- Start ROS bag node with the given file name and topic list. -->
+  <arg
+    name="rosbag_file_name"
+    default="$(find pulse_lab_ur5_e_control_utils)/dat/debug_vs" />
+  <arg
+    name="rosbag_topic_list"
+    default="$(arg action_server_name_arg)/goal /joint_states /rosout /visual_servoing/fsm_state /visual_servoing/search/transform /visual_servoing/target_pose /deep_learning/bbox_img /deep_learning/bounding_box /deep_learning/exec_time /verasonics/channel_data" />
+  <node
+    if="$(arg ros_record)"
+    name="rosbag_record_node"
+    pkg="rosbag"
+    type="record"
+    args="-o $(arg rosbag_file_name) $(arg rosbag_topic_list)" />
+</launch>

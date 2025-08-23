@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Flag indicating whether or not to print debug statements from nodes launched in this file. -->
+  <arg name="debug" default="true" />
+
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_vs_sim)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_vs_sim)/config/info_rosconsole.conf" />
+
+  <!-- Input arguments for channel data generation node -->
+  <arg name="pa_chdat_delta_t" default="1.0" />
+  <arg name="sim_speed_of_sound" default="1540.0" />
+  <arg name="trans_samp_freq" default="11.88e6" />
+
+  <include file="$(find pulse_vs_sim)/launch/pa_chdat_gen.launch">
+    <arg name="delta_t" value="$(arg pa_chdat_delta_t)" />
+    <arg name="sim_speed_of_sound" value="$(arg sim_speed_of_sound)" />
+    <arg name="trans_samp_freq" value="$(arg trans_samp_freq)" />
+  </include>
+</launch>

@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: pulse_ur5e_description
+    relative_path: urdf/ur5e_p42v_2023.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/ur5e_p42v.srdf
+  CONFIG:
+    author_name: Mardava Gubbi
+    author_email: mgubbi1@jhu.edu
+    generated_timestamp: 1724872361

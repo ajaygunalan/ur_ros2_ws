@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Time step between consecutive point source movements. -->
+  <arg name="pt_src_delta_t" default="1.0" />
+
+  <!-- Fixed x-, y-, and z-positions of point source relative to base frame. -->
+  <arg name="pt_src_x_pos" default="0.00" />
+  <arg name="pt_src_y_pos" default="0.000" />
+  <arg name="pt_src_z_pos" default="0.06" />
+
+  <!-- Flag indicating whether or not to add process noise to point source control -->
+  <arg name="add_process_noise" default="true" />
+
+  <!-- Name of frame corresponding to ultrasound probe. -->
+  <arg name="probe_frame_name" default="p42v_link1" />
+
+
+  <!-- Launch a node to move a point source in a pre-determined manner relative to a fixed frame. -->
+  <node
+    name="pt_src_ctrl" pkg="pulse_vs_sim" type="point_source_fixed_node"
+    required="true" respawn="false" output="screen">
+    <param name="delta_t" type="double" value="$(arg pt_src_delta_t)" />
+    <param name="x_pos" type="double" value="$(arg pt_src_x_pos)" />
+    <param name="y_pos" type="double" value="$(arg pt_src_y_pos)" />
+    <param name="z_pos" type="double" value="$(arg pt_src_z_pos)" />
+    <param name="add_process_noise" type="boolean" value="$(arg add_process_noise)" />
+    <param name="probe_frame_name" type="str" value="$(arg probe_frame_name)" />
+  </node>
+</launch>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Flag indicating whether or not to print debug statements in ROS
+       console. -->
+  <arg name="debug" default="true" />
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_force_control)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_force_control)/config/info_rosconsole.conf" />
+
+  <node
+    name="gubbi_standalone_force_control_node"
+    pkg="pulse_force_control"
+    type="gubbi_standalone_force_control_node"
+    respawn="false" output="screen">
+  </node>
+</launch>

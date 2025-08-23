@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file launches a node performing a consistency check described by Gubbi and Bell, IEEE ICRA 2021. -->
+<launch>
+  <node
+    name="filter"
+    pkg="pulse_estimation_filters"
+    type="consistency_check_node"
+    required="true" respawn="false" output="screen">
+
+    <!-- Integer index of class corresponding to sources in point source localization outputs. Other detections may
+         correspond to reflection artifacts, and are usually associated with a class index of 1. -->
+    <param name="src_class_id" type="int" value="0" />
+    <param name="pt_src_mean_dist_thresh" type="double" value="1e-2" />
+    <param name="detection_topic_name" type="str" value="/pt_src_loc/detections" />
+  </node>
+</launch>

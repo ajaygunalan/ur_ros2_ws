@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <!-- Name of the action server to be used with the UR5e -->
+  <arg name="sim" default="false" />
+  <arg
+    if="$(arg sim)"
+    name="action_server_name_arg"
+    value="/arm_controller/follow_joint_trajectory" />
+  <arg
+    unless="$(arg sim)"
+    name="action_server_name_arg"
+    value="/scaled_pos_joint_traj_controller/follow_joint_trajectory" />
+  <param
+    name="action_server_name"
+    type="str"
+    value="$(arg action_server_name_arg)" />
+
+  <!-- Start ROS bag node with the given file name and topic list. -->
+  <arg
+    name="rosbag_file_name"
+    default="$(find pulse_control_utils)/dat/pcu" />
+  <arg
+    name="rosbag_topic_list"
+    default="/joint_states /rosout" />
+  <arg
+    name="record"
+    default="false" />
+  <node
+    if="$(arg record)"
+    name="rosbag_record_node"
+    pkg="rosbag"
+    type="record"
+    args="-o $(arg rosbag_file_name) $(arg action_server_name_arg)/goal $(arg rosbag_topic_list)" />
+</launch>

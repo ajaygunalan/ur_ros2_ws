@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Flag indicating whether or not to print debug statements in ROS
+       console. -->
+  <arg name="debug" default="true" />
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_force_estimation)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find pulse_force_estimation)/config/info_rosconsole.conf" />
+
+  <!-- Run the SROM-based bias compensation and gravity estimation method. -->
+  <node
+    name="yu_bias_est_srom_node"
+    pkg="pulse_force_estimation"
+    type="yu_bias_est_srom_node"
+    respawn="false" output="screen">
+  </node>
+</launch>

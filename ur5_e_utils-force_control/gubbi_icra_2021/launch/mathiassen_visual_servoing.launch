@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="debug" default="false"/>
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find gubbi_icra_2021)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find gubbi_icra_2021)/config/info_rosconsole.conf" />
+
+  <!-- Path planning arguments -->
+  <arg name="sim" default="false" />
+  <arg name="delta_t_arg" default="0.1" />
+  <arg name="joint_omega_max_arg" default="0.1" />
+
+  <!--Thresholding for segmentation filters -->
+  <arg name="needle_filter_threshold" default="175"/>
+  <arg name="moment_filter_threshold" default="175"/>
+
+  <!--Kernel size for the moment filter -->
+  <arg name="moment_kernel_size" default="2"/>
+  <!--Kernel size for needle filter -->
+  <arg name="needle_kernel_size" default="15"/>
+
+  <!--Debugging-save segmented image to folder -->
+  <arg name="save_img" default="false"/>
+  <arg name="save_path" default=""/>
+
+  <!--State parameters -->
+  <arg name="r0" default="200"/>
+  <arg name="needle_rad" default="200"/>
+  <arg name="r_lambda" default="5"/>
+  <arg name="k" default="0.01"/>
+
+  <arg name="record" default="false"/>
+  <arg name="debug_segmentation" default="false"/>
+
+  <!-- Position + Force control only allows translational x, y and rotational z degrees of freedom -->
+  <arg name="force_control" default="true"/>
+
+  <!-- rosbag arguments -->
+  <arg
+    name="rosbag_file_name"
+    default="$(find gubbi_icra_2021)/dat/mathiassen_visual_servoing" />
+  <arg name="rosbag_topic_list" default="/joint_states /rosout /verasonics/us_img" />
+
+  <include file="$(find pulse_control_utils)/launch/set_params.launch">
+    <arg name="sim" value="$(arg sim)"/>
+    <arg name="rosbag_file_name" value="$(arg rosbag_file_name)"/>
+    <arg name="rosbag_topic_list" value="$(arg rosbag_topic_list)"/>
+    <arg name="record" value="$(arg record)"/>
+  </include>
+
+  <include
+    file="$(find ur5e_p42v_moveit_config)/launch/planning_context.launch">
+    <arg name="load_robot_description" value="true"/>
+    <!-- <arg name="limited" value="false"/> -->
+  </include>
+  <param name="/end_effector_name" type="str" value="p42v_link1" />
+
+  <node
+    name="mathiassen_visual_servoing"
+    pkg="gubbi_icra_2021"
+    type="mathiassen_visual_servoing"
+    respawn="false"
+    output="screen">
+    <rosparam
+      command="load"
+      file="$(find ur5e_p42v_moveit_config)/config/kinematics.yaml"/>
+    <param
+      name="delta_t"
+      type="double"
+      value="$(arg delta_t_arg)" />
+    <param
+      name="joint_omega_max"
+      type="double"
+      value="$(arg joint_omega_max_arg)" />
+    <param
+      name="needle_filter_threshold"
+      type="int"
+      value="$(arg needle_filter_threshold)"/>
+    <param
+      name="moment_filter_threshold"
+      type="int"
+      value="$(arg moment_filter_threshold)"/>
+    <param
+      name="moment_kernel_size"
+      type="int"
+      value="$(arg moment_kernel_size)"/>
+    <param
+      name="needle_kernel_size"
+      type="int"
+      value="$(arg needle_kernel_size)"/>
+    <param
+      name="save_img"
+      type="string"
+      value="$(arg save_img)"/>
+    <param
+      name="save_path"
+      type="string"
+      value="$(arg save_path)"/>
+    <param
+      name="r0"
+      type="double"
+      value="$(arg r0)"/>
+    <param
+      name="r_lambda"
+      type="double"
+      value="$(arg r_lambda)"/>
+    <param
+      name="needle_rad"
+      type="double"
+      value="$(arg needle_rad)"/>
+    <param name="k"
+      type="double"
+      value="$(arg k)"/>
+    <param name="debug_segmentation"
+      type="bool"
+      value="$(arg debug_segmentation)" />
+    <param name="force_control"
+      type="bool"
+      value="$(arg force_control)" />
+  </node>
+</launch>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Configure debug options. -->
+  <arg name="debug" default="false" />
+  <env
+    if="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find gubbi_icra_2021)/config/debug_rosconsole.conf" />
+  <env
+    unless="$(arg debug)"
+    name="ROSCONSOLE_CONFIG_FILE"
+    value="$(find gubbi_icra_2021)/config/info_rosconsole.conf" />
+
+  <!-- NOTE: This launch file is expected to be run after a bringup file (e.g.,
+    p42v_bringup.launch in package pulse_ur5e_robot_driver) and a move
+    group launch file (e.g., p42v_move_group.launch in this package) are up and
+    running. -->
+  <!-- NOTE: This include statement below is commented out to allow users to
+    launch the `move_group` node separate from this launch file. This process is
+    useful for debugging purposes. -->
+  <!-- Include `move_group.launch` from the package containing the desired
+       MoveIt configuration. That launch file will load URDF, SRDF, and other
+       files and launch the `move_group` node. -->
+  <!-- <include file="$(find ur5e_p42v_moveit_config)/launch/move_group.launch"> -->
+    <!-- TODO: Add arguments here. -->
+  <!-- </include> -->
+
+  <!-- Launch the move group interface node developed in this package. -->
+  <node
+    name="moveit_visual_servoing_node"
+    pkg="gubbi_icra_2021"
+    type="moveit_visual_servoing_node"
+    respawn="false"
+    output="screen">
+  </node>
+</launch>
