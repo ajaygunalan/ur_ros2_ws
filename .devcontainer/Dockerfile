@@ -6,6 +6,7 @@ USER $USERNAME
 # Install all ROS dependencies, tools, and debugging utilities in a single layer
 RUN sudo add-apt-repository universe && \
     sudo apt-get update && \
+    sudo apt-get upgrade -y && \
     sudo apt-get install -y --no-install-recommends \
     # Core tools
     liburdfdom-tools \

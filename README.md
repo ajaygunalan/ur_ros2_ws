@@ -43,6 +43,11 @@ open in VS Code by `code .` and select `Reopen in Container`
     sleep infinity
     ```
 
+    Notes:
+    - --network=host lets the container use the WSL network stack directly (ideal with mirrored networking).
+    - The X11 socket is mounted for GUI apps (RViz2, etc.).
+
+
     Command Breakdown:
 
     * `docker run -d --name ur-dev-container`: Runs the container in detached mode (`-d`) and gives it a memorable name.
@@ -77,4 +82,29 @@ Once the container is created, use these commands for daily development:
     ```
 
 Now, follow the steps [here](https://github.com/ajaygunalan/ur_admittance_controller/blob/master/README.md) like a normal ROS2 workspace.
+
+
+### To to control the robot via WSL2:
+
+
+Add the following config to C:\USERS\<user_name>\.wslconfig
+```
+[wsl2]
+networkingMode=mirrored
+firewall=true
+```
+Then restart it: `wsl --shutdown` and `wsl`
+
+
+Ensure Windows Firewall allows inbound traffic (`AllowInboundRules=True`) to the WSL interface after enabling mirrored mode by:
+
+```
+ Get-NetFirewallProfile -PolicyStore ActiveStore 
+```
+
+if not set it by:
+
+```
+Set-NetFirewallHyperVVMSetting -Name '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -DefaultInboundAction Allow
+```
 
