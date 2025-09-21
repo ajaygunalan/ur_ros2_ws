@@ -87,7 +87,7 @@ Now, follow the steps [here](https://github.com/ajaygunalan/ur_admittance_contro
 ### To to control the robot via WSL2:
 
 
-Add the following config to C:\USERS\<user_name>\.wslconfig
+Add the following config to C:\USERS\\<user_name>\\.wslconfig
 ```
 [wsl2]
 networkingMode=mirrored
